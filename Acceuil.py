@@ -52,14 +52,14 @@ def showHighScorGame2():
 
     print(tempList)
     tempList.sort(key=lambda e: e[2], reverse=False)
-    cols = ('Position', 'Date', 'Name', 'Score','Vitesse')
+    cols = ('Position', 'Date', 'Name', 'Score')
     scores = Tk() 
 
     listBox = ttk.Treeview(scores, columns=cols, show='headings')
-    for i in range(6):
+    for i in range(5):
         listBox.column(f"#{i}", anchor=CENTER, stretch=NO)
-    for i, (date, name, score, vitesse) in enumerate(tempList, start=1):
-        listBox.insert("", "end", values=(i, date, name, score, vitesse))
+    for i, (date, name, score) in enumerate(tempList, start=1):
+        listBox.insert("", "end", values=(i, date, name, score))
     # set column headings
     for col in cols:
         listBox.heading(col, text=col)    
@@ -98,16 +98,16 @@ labelTitre1.place(x=20, y=20)
 labelTitre2 = Label(root, text="JEU DE REFLEXION", font='Helvetica 18 bold')
 labelTitre2.place(x=20, y=250)
 
-image1 = Image.open("./images/LogoJeuClique.png").resize((250,150), Image.ANTIALIAS)
+image1 = Image.open("./images/LogoJeuClique.png")
 test1 = ImageTk.PhotoImage(image1)
 
-image2 = Image.open("./images/LogoJeuTempsReaction.png").resize((150,120), Image.ANTIALIAS)
+image2 = Image.open("./images/LogoJeuTempsReaction.png")
 test2 = ImageTk.PhotoImage(image2)
 
 image3 = Image.open("./images/Logo+.png").resize((50,50), Image.ANTIALIAS)
 test3 = ImageTk.PhotoImage(image3)
 
-image4 = Image.open("./images/Logo Morpion.png").resize((150,120), Image.ANTIALIAS)
+image4 = Image.open("./images/Logo Morpion.png")
 test4 = ImageTk.PhotoImage(image4)
 
 image5 = Image.open("./images/Logo+.png").resize((50,50), Image.ANTIALIAS)
@@ -119,7 +119,7 @@ test5 = ImageTk.PhotoImage(image5)
 label1 = Label(root, image=test1, width=150, height=150, borderwidth=1, relief="solid")
 label1.image = test1
 label1.place(x=40, y=60)
-button1 = Button(root, text="Play", command= lambda: runGame1())
+button1 = Button(root, text="Jouer", command= lambda: runGame1())
 button1.place(x=40, y=215)
 button11 = Button(root, text="Highscore", command= lambda: showHighScorGame1())
 button11.place(x=126, y=215)
@@ -129,7 +129,7 @@ tip.bind_widget(label1,balloonmsg="Le but du jeu ici est simple, il suffit de cl
 label2 = Label(root, image=test2, width=150, height=150, borderwidth=1, relief="solid")
 label2.image = test2
 label2.place(x=240, y=60)
-button2 = Button(root, text="Play", command= lambda: runGame2())
+button2 = Button(root, text="Jouer", command= lambda: runGame2())
 button2.place(x=240, y=215)
 button22 = Button(root, text="Highscore", command= lambda: showHighScorGame2())
 button22.place(x=326, y=215)
@@ -151,7 +151,7 @@ tip3.bind_widget(label3,balloonmsg="Plus de jeu à venir")
 label4 = Label(root, image=test4, width=150, height=150, borderwidth=1, relief="solid")
 label4.image = test4
 label4.place(x=40, y=290)
-button4 = Button(root, text="Play", command= lambda: runGame3())
+button4 = Button(root, text="Jouer", command= lambda: runGame3())
 button4.place(x=40, y=445)
 button44 = Button(root, text="Highscore", command= lambda: showHighScorGame3())
 button44.place(x=126, y=445)

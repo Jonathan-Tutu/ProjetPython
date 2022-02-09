@@ -105,15 +105,6 @@ fen.title('Morpion')
 message=Label(fen, text='Aux croix de jouer')
 message.grid(row = 0, column = 0, columnspan=2, padx=3, pady=3, sticky = W+E)
 
-
-##-----Création des boutons-----##
-bouton_quitter = Button(fen, text='Quitter', command=fen.destroy)
-bouton_quitter.grid(row = 2, column = 1, padx=3, pady=3, sticky = S+W+E)
-
-bouton_reload = Button(fen, text='Recommencer', command=reinit)
-bouton_reload.grid(row = 2, column = 0, padx=3, pady=3, sticky = S+W+E)
-
-
 ##-----Création du canevas-----##
 dessin=Canvas(fen, bg="white", width=301, height=301)
 dessin.grid(row = 1, column = 0, columnspan = 2, padx=5, pady=5)
