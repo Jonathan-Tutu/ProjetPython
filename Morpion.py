@@ -106,11 +106,10 @@ def saveHighScore():
             spamreader = csv.reader(csvfile, delimiter=';')     
             for row in spamreader:    
                 tempList.append(f"{row[0]};{row[1]}")
-            tempList.append(f"{username.get()};1") 
-            print(tempList)
-
+            
         open('./saves/highscoreSaveMorpion', 'w').close() #Clear le file
         for i in tempList:
+            print("Yes")
             a = i.split(";")
             if a[0] == username.get(): #Récup le highscore name
                 test = int(a[1])
@@ -119,7 +118,7 @@ def saveHighScore():
                 z = str(a[0])+";"+str(a[1])
                 List2.append(z)
             else:
-                List2.append(i)
+                tempList.append(f"{username.get()};1") 
         if len(tempList) == 0: #Permet de gérer si le fichier est vide
                 List2.append(f"{username.get()};1")
 
