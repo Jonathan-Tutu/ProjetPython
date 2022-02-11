@@ -7,9 +7,9 @@ import datetime
 parser = configparser.ConfigParser()
 
 parser.read("./Config.ini")
-speed = parser['ReflexGame']['Speed']
-size = parser['ReflexGame']['GridSize']
-life = parser['ReflexGame']['Life']
+speed = parser['ReflexGame']['Speed'] = 800
+size = parser['ReflexGame']['GridSize'] = 5
+life = parser['ReflexGame']['Life'] = 4
 
 PICT_SIZE=120
 PAD=10

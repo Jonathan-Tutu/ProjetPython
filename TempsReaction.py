@@ -11,8 +11,8 @@ import time
 parser = configparser.ConfigParser()
 
 parser.read("./Config.ini")
-speed = parser['ReactGame']['TempsMin']
-size = parser['ReactGame']['TempsMax']
+timeMinReac = parser['ReactGame']['TempsMinReac'] = 1
+timeMaxReac = parser['ReactGame']['TempsMaxReac'] = 7
 
 
 root = Tk()
@@ -45,7 +45,7 @@ def replay(event):
         
 def updateTime(event):
         if root.counter == 0:
-                time.sleep(random.randint(1,7)) #à rentre "aléatoire"
+                time.sleep(random.randint(int(timeMinReac),int(timeMaxReac))) #à rentre "aléatoire"
                 canvas.configure(bg="green")
                 root.start = time.perf_counter()
                 print(root.counter)
