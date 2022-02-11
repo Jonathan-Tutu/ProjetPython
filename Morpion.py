@@ -1,30 +1,36 @@
 
 #TODO
-#COMMENTAIRE + VERIFIER LES NOMS DE VARIABLES + FINIR TOUT LE HIGHSCORE DU MORPION 
-#CORRIGER L'EGALITER, FAIRE EN SORTE QU'UN FICHIER DE SAVE SE CREER S'IL N'EXISTE PAS 
-#POUR EVITER LES BUGS
+#COMMENTAIRE + VERIFIER LES NOMS DE VARIABLES + FINIR HIGHSCORE MORPION
 
 from pathlib import Path
 import configparser
-parser = configparser.ConfigParser()
 import csv
+from tkinter import messagebox
+##-----Importation des Modules-----##
+from tkinter import *
+from typing import List
 
-
+parser = configparser.ConfigParser()
 parser.read("./Config.ini")
 CouleurCercle = parser['Morpion']['CouleurCercle'] = "0x12FF34"
 CouleurCroix = parser['Morpion']['CouleurCroix'] = "0x1216FF"
 
+##-----Création de la rootêtre-----##
+root = Tk()
+root.title('Morpion')
+root.resizable(width=False, height=False)
+username = StringVar()                                    
 
-##-----Importation des Modules-----##
-from tkinter import *
-
+##-----Création du canvas-----##
+dessin=Canvas(root, bg="white", width=301, height=301)
+dessin.grid(row = 1, column = 0, columnspan = 2, padx=5, pady=5)
 
 ##----- Définition des Variables globales -----##
 cases=[ [0, 0, 0],
         [0, 0, 0],
         [0, 0, 0]]
 drapeau = True                              # True pour les croix, False pour les ronds
-n = 1                                       # Numéro du tour de jeu
+n = 1  
 
 
 ##----- Définition des Fonctions -----##
@@ -72,20 +78,14 @@ def verif(cases):
        # Parcours des sommes
         if result[i] == 3:
             dessin.unbind("<Button-1>")
-            print("x")
-            #Set une variable
-            loseWindows("Gagnant X")
-            saveHighScore() #Remove only for test
+            loseWindows("Le gagnant est la croix : X")
         elif result[i] == -3:
             dessin.unbind("<Button-1>")
-            print("y")
-            #Set une variable
-            loseWindows("Gagnant Y")
-    if n == 9:
+            loseWindows("Le gagnant est le cercle : O")
+
+    if n == 9: #A corriger
         dessin.unbind("<Button-1>")
-        print("Egalité")
         loseWindows("Egalité")
-        #Set une variable
 
 def doesitexist():
     if loseWin.winfo_exists():
@@ -94,59 +94,64 @@ def doesitexist():
 def createFileIfNotExist():
     myfile = Path("./saves/highscoreSaveMorpion") #Variable
     myfile.touch(exist_ok=True)
-    f = open(myfile)
 
 def saveHighScore():
-
     createFileIfNotExist()
-    if(len(userName == 0)): #A récup
-        print("Erreur")
+    tempList = []
+    List2 = []
+    if(len(username.get()) == 0):
+        messagebox.showerror(title="Erreur nom d'utilisateur", message="Vous ne pouvez pas enregistrer un nom d'utilisateur vide")
     else:
-        tempList = []
-        List2 = []
         with open('./saves/highscoreSaveMorpion', newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=';')     
             for row in spamreader:    
-                tempList.append(row)
-        print(tempList)
+                tempList.append(f"{row[0]};{row[1]}")
+            tempList.append(f"{username.get()};1") 
+            print(tempList)
 
         open('./saves/highscoreSaveMorpion', 'w').close() #Clear le file
         for i in tempList:
-            if i[0] == "Jonathan": #Récup le highscore name
-
-                test = int(i[1])
+            a = i.split(";")
+            if a[0] == username.get(): #Récup le highscore name
+                test = int(a[1])
                 test += 1
-                i[1] = test 
-                List2.append(i)
+                a[1] = test 
+                z = str(a[0])+";"+str(a[1])
+                List2.append(z)
             else:
-                List2.append("Else")
-    
+                List2.append(i)
+        if len(tempList) == 0: #Permet de gérer si le fichier est vide
+                List2.append(f"{username.get()};1")
 
-    f = open("./saves/highscoreSaveMorpion", "a") 
-    for i in range(len(List2)):
-        f.write(f"{List2[i][0]};{List2[i][1]}")  
-    
+        print(List2)
+        f = open("./saves/highscoreSaveMorpion", "a") 
+        for i in List2:
+            f.write(i)  
+
+        ButtonSave.config(state=DISABLED)
+
 def loseWindows(var):
-    print("Vous avez perdu")
     #Afficher truc avec Tkinter
     global loseWin
-    loseWin = Toplevel(fen)
+    loseWin = Toplevel(root)
     loseWin.resizable(width=False, height=False)
     loseWin.geometry("300x150")
     Button(loseWin, text="Rejouer", command= lambda: [init(), doesitexist()]).place(x=50, y=100) #BtnRestart
-    Button(loseWin, text="Quitter", command= lambda: fen.destroy()).place(x=200, y=100) #BtnExit
+    Button(loseWin, text="Quitter", command= lambda: root.destroy()).place(x=200, y=100) #BtnExit
 
     #Gérer le highscore
     global ButtonSave
-    #ButtonSave = Button(loseWin, text="Highscore", command= lambda: saveHighScore())
-    #ButtonSave.place(x=200, y=60) #BtnSaveHighScore
+    ButtonSave = Button(loseWin, text="Save", width= 6 ,command= lambda: saveHighScore(), )
+    ButtonSave.place(x=200, y=60) #BtnSaveHighScore
 
-    #Label(loseWin, text="Vous avez perdu").pack()
-    #Entry(loseWin, textvariable=username).place(x=50,y=60)
-    #Label(loseWin, text=f"Votre score : {root.score}").pack()
+    Label(loseWin, text=f"Username : ").place(x=8, y= 60)
+    Label(loseWin, text=var).pack()
+    y = Entry(loseWin, textvariable=username, width=12)
+    y.place(x=80,y=57)
+    y.delete(0, END)
     
-
 def init():
+    dessin.bind('<Button-1>', afficher)
     """Cette fonction ré-initialise les variables globales."""
     global drapeau, cases, n
     cases = [[0, 0, 0],
@@ -162,19 +167,6 @@ def init():
       dessin.create_line(100*i+2, 0, 100*i+2, 303, width=3)
 
 
-##-----Création de la fenêtre-----##
-fen = Tk()
-fen.title('Morpion')
-fen.resizable(width=False, height=False)
-
-##-----Création du canvas-----##
-dessin=Canvas(fen, bg="white", width=301, height=301)
-dessin.grid(row = 1, column = 0, columnspan = 2, padx=5, pady=5)
-
-
-##-----Evenements-----##
-dessin.bind('<Button-1>', afficher)
-
 ##-----Programme principal-----##
 init()
-fen.mainloop()                      # Boucle d'attente des événements
+root.mainloop()                      # Boucle d'attente des événements

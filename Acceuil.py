@@ -66,21 +66,21 @@ def showHighScorGame2():
 
 def showHighScorGame3():
     tempList = []
-    with open('./saves/highscoreSaveReact', newline='') as csvfile:
+    with open('./saves/highscoreSaveMorpion', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';')     
         for row in spamreader:    
             tempList.append(row)
 
     print(tempList)
-    tempList.sort(key=lambda e: e[2], reverse=False)
-    cols = ('Position', 'Date', 'Name', 'Score')
+    tempList.sort(key=lambda e: e[1], reverse=False)
+    cols = ('Position', 'Name', 'Nb Victoire')
     scores = Tk() 
 
     listBox = ttk.Treeview(scores, columns=cols, show='headings')
-    for i in range(5):
+    for i in range(4):
         listBox.column(f"#{i}", anchor=CENTER, stretch=NO)
-    for i, (date, name, score) in enumerate(tempList, start=1):
-        listBox.insert("", "end", values=(i, date, name, score))
+    for i, (name, nbVictoire) in enumerate(tempList, start=1):
+        listBox.insert("", "end", values=(i, name, nbVictoire))
     # set column headings
     for col in cols:
         listBox.heading(col, text=col)    

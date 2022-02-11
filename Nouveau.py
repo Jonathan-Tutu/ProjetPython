@@ -3,15 +3,17 @@ import random
 import configparser
 import datetime
 from pathlib import Path
+from tkinter import messagebox
+
 
 #TODO => Faire un morpion (A modif) - Faire sélection de jeu - Highscore - 
 
 parser = configparser.ConfigParser()
 
 parser.read("./Config.ini")
-speed = parser['ReflexGame']['Speed'] = 800
-size = parser['ReflexGame']['GridSize'] = 5
-life = parser['ReflexGame']['Life'] = 4
+speed = parser['ReflexGame']['Speed'] = "800"
+size = parser['ReflexGame']['GridSize'] = "5"
+life = parser['ReflexGame']['Life'] = "4"
 
 PICT_SIZE=120
 PAD=10
@@ -64,6 +66,27 @@ def createFileIfNotExist():
     myfile.touch(exist_ok=True)
     f = open(myfile)
 
+
+def loseWindows():
+    #Afficher truc avec Tkinter
+    global loseWin
+    loseWin = Toplevel(root)
+    loseWin.resizable(width=False, height=False)
+    loseWin.geometry("300x150")
+    Button(loseWin, text="Rejouer", command= lambda: restart(loseWin)).place(x=50, y=100) #BtnRestart
+    Button(loseWin, text="Quitter", command= lambda: root.destroy()).place(x=200, y=100) #BtnExit
+
+    #Gérer le highscore
+    global ButtonSave
+    ButtonSave = Button(loseWin, text="Save", width= 6 ,command= lambda: saveHighScore())
+    ButtonSave.place(x=200, y=60) #BtnSaveHighScore
+
+    Label(loseWin, text=f"Username : ").place(x=8, y= 60)
+    Label(loseWin, text="Vous avez perdu").pack()
+    y = Entry(loseWin, textvariable=username, width=12).place(x=80,y=57)
+    y.place(x=80,y=57)
+    y.delete(0, END)
+
 def phrase_refresh():
     print(root.noclic)
     if root.noclic == 0: #Permet en cas de clique d'enlever une vie
@@ -80,33 +103,24 @@ def phrase_refresh():
     else:
         print("Vous avez perdu")
         #Afficher truc avec Tkinter
-        loseWin = Toplevel(root)
-        loseWin.resizable(width=False, height=False)
-        loseWin.geometry("300x150")
-        Button(loseWin, text="Rejouer", command= lambda: restart(loseWin)).place(x=50, y=100) #BtnRestart
-        Button(loseWin, text="Quitter", command= lambda: root.destroy()).place(x=200, y=100) #BtnExit
-
-        global ButtonSave
-        ButtonSave = Button(loseWin, text="Highscore", command= lambda: saveHighScore())
-        ButtonSave.place(x=200, y=60) #BtnSaveHighScore
-
-        Label(loseWin, text="Vous avez perdu").pack()
-        Entry(loseWin, textvariable=username).place(x=50,y=60)
-        Label(loseWin, text=f"Votre score : {root.score}").pack()
+        loseWindows()
+        
     root.noclic = 0
 
 def saveHighScore():
-
+    
     createFileIfNotExist()
     userName = username.get()
-    if(len(userName == 0)):
-        print("Erreur")
+    if(len(userName) == 0):
+        messagebox.showerror(title="Erreur nom d'utilisateur", message="Vous ne pouvez pas enregistrer un nom d'utilisateur vide")
     else:
         ButtonSave.config(state=DISABLED)
         f = open("./saves/highscoreSaveClic", "a")
         date = datetime.date.today()
         f.write(f"{date};{userName};{root.score};{speed}\n")
         f.close()
+
+        ButtonSave.config(state=DISABLED)
 
 def phrase_derefresh():
     cnv.create_image(X0+a*SIDE, Y0+b*SIDE, image=cover2) #On enlève l'image
