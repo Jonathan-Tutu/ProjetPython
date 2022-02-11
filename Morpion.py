@@ -1,8 +1,10 @@
 
 #TODO
 #COMMENTAIRE + VERIFIER LES NOMS DE VARIABLES + FINIR TOUT LE HIGHSCORE DU MORPION 
-#(IF PRENOM EXISTE ON RECUPERE PUIS INCREMENTE LE NB DE VICTOIRE)
+#CORRIGER L'EGALITER, FAIRE EN SORTE QU'UN FICHIER DE SAVE SE CREER S'IL N'EXISTE PAS 
+#POUR EVITER LES BUGS
 
+from pathlib import Path
 import configparser
 parser = configparser.ConfigParser()
 import csv
@@ -89,25 +91,41 @@ def doesitexist():
     if loseWin.winfo_exists():
         loseWin.destroy()
 
+def createFileIfNotExist():
+    myfile = Path("./saves/highscoreSaveMorpion") #Variable
+    myfile.touch(exist_ok=True)
+    f = open(myfile)
 
 def saveHighScore():
-    tempList = []
-    List2 = []
-    with open('./saves/highscoreSaveMorpion', newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=';')     
-        for row in spamreader:    
-            tempList.append(row)
-    
-    print(tempList)
-    
-    open('file.txt', 'w').close() #Clear le file
-    for i in tempList:
-        if i[0] == "Jonathan":
-            List2.append(i)
-    print(List2)
+
+    createFileIfNotExist()
+    if(len(userName == 0)): #A récup
+        print("Erreur")
+    else:
+        tempList = []
+        List2 = []
+        with open('./saves/highscoreSaveMorpion', newline='') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=';')     
+            for row in spamreader:    
+                tempList.append(row)
+        print(tempList)
+
+        open('./saves/highscoreSaveMorpion', 'w').close() #Clear le file
+        for i in tempList:
+            if i[0] == "Jonathan": #Récup le highscore name
+
+                test = int(i[1])
+                test += 1
+                i[1] = test 
+                List2.append(i)
+            else:
+                List2.append("Else")
     
 
-
+    f = open("./saves/highscoreSaveMorpion", "a") 
+    for i in range(len(List2)):
+        f.write(f"{List2[i][0]};{List2[i][1]}")  
+    
 def loseWindows(var):
     print("Vous avez perdu")
     #Afficher truc avec Tkinter

@@ -2,6 +2,8 @@ from tkinter import *
 import random
 import configparser
 import datetime
+from pathlib import Path
+
 #TODO => Faire un morpion (A modif) - Faire sélection de jeu - Highscore - 
 
 parser = configparser.ConfigParser()
@@ -57,6 +59,11 @@ def clic(event):
     elif line != a and col != b:
         root.life -= 1
 
+def createFileIfNotExist():
+    myfile = Path("./saves/highscoreSaveClic") #Variable
+    myfile.touch(exist_ok=True)
+    f = open(myfile)
+
 def phrase_refresh():
     print(root.noclic)
     if root.noclic == 0: #Permet en cas de clique d'enlever une vie
@@ -89,12 +96,17 @@ def phrase_refresh():
     root.noclic = 0
 
 def saveHighScore():
+
+    createFileIfNotExist()
     userName = username.get()
-    ButtonSave.config(state=DISABLED)
-    f = open("./saves/highscoreSaveClic", "a")
-    date = datetime.date.today()
-    f.write(f"{date};{userName};{root.score};{speed}\n")
-    f.close()
+    if(len(userName == 0)):
+        print("Erreur")
+    else:
+        ButtonSave.config(state=DISABLED)
+        f = open("./saves/highscoreSaveClic", "a")
+        date = datetime.date.today()
+        f.write(f"{date};{userName};{root.score};{speed}\n")
+        f.close()
 
 def phrase_derefresh():
     cnv.create_image(X0+a*SIDE, Y0+b*SIDE, image=cover2) #On enlève l'image

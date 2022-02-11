@@ -5,15 +5,14 @@ import random
 from subprocess import run
 import datetime
 import configparser
-
+from pathlib import Path
 import time
 
 parser = configparser.ConfigParser()
 
 parser.read("./Config.ini")
-timeMinReac = parser['ReactGame']['TempsMinReac'] = 1
-timeMaxReac = parser['ReactGame']['TempsMaxReac'] = 7
-
+timeMinReac = parser['ReactGame']['TempsMinReac'] = "1"
+timeMaxReac = parser['ReactGame']['TempsMaxReac'] = "7"
 
 root = Tk()
 root.geometry("310x300")
@@ -30,11 +29,15 @@ def key(event):
     print("pressed", repr(event.char))
 
 def saveHighScore():
+        createFileIfNotExist()
         userName = username.get()
-        ButtonSave.config(state=DISABLED)
-        f = open("./saves/highscoreSaveReact", "a")
-        f.write(f"{datetime.date.today()};{userName};{round(root.end-root.start, 3)}")
-        f.close()
+        if(len(userName == 0)):
+                print("Erreur")
+        else:
+                ButtonSave.config(state=DISABLED)
+                f = open("./saves/highscoreSaveReact", "a")
+                f.write(f"{datetime.date.today()};{userName};{round(root.end-root.start, 3)}")
+                f.close()
 
 def replay(event):
         canvas.config(bg="blue")
@@ -43,6 +46,11 @@ def replay(event):
         root.destroy()
         run("python ./TempsReaction.py") #Permet de relancer l'application
         
+def createFileIfNotExist():
+    myfile = Path("./saves/highscoreSaveReact") #Variable
+    myfile.touch(exist_ok=True)
+    f = open(myfile)
+    
 def updateTime(event):
         if root.counter == 0:
                 time.sleep(random.randint(int(timeMinReac),int(timeMaxReac))) #à rentre "aléatoire"
